@@ -1,5 +1,4 @@
 import chalk from 'chalk'
-import figlet from 'figlet'
 import * as fs from 'fs'
 import { InclusiveDiagnostic, Scanner } from './scanner'
 import glob from 'glob'
@@ -18,7 +17,6 @@ export class Program {
      */
     constructor(args: string[]) {
         this.commandArguments = Program.SetupCommandArgs(args)
-        Program.PrintWelcomeSign()
     }
 
     //#endregion
@@ -133,13 +131,6 @@ export class Program {
         } else {
             return glob.sync(this.GetPathArgument())
         }
-    }
-
-    /**
-     * Prints the beautiful INCLUSIVELINT sign
-     */
-    private static PrintWelcomeSign() {
-        console.log(chalk.green(figlet.textSync('inclusivelint', { horizontalLayout: 'full' })))
     }
 
     /**
