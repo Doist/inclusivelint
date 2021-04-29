@@ -153,7 +153,7 @@ export class Program {
             .option(
                 '-d, --dictionary-url <url>',
                 'URL to the dictionary. See wordsTable.md for the format',
-                'https://raw.githubusercontent.com/inclusivelint/inclusivelint/main/parsers/wordsTable.md',
+                'https://raw.githubusercontent.com/Doist/inclusivelint/main/src/wordsTable.md',
             )
             .option(
                 '-p, --path <path>',
