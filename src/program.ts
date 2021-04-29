@@ -1,8 +1,8 @@
-import chalk from 'chalk'
 import * as fs from 'fs'
 import { InclusiveDiagnostic, Scanner } from './scanner'
 import glob from 'glob'
 import { Command, OptionValues } from 'commander'
+import * as core from '@actions/core'
 
 /**
  * Entrypoint program class.
@@ -94,10 +94,8 @@ export class Program {
      * @returns formatted message.
      */
     private static PrintWarningMessage(filePath: string, diagnostic: InclusiveDiagnostic) {
-        console.log(
-            chalk.yellow(
-                `[Warning] ${filePath}: Line ${diagnostic.lineNumber} : The term ${diagnostic.term} was found. Consider using ${diagnostic.suggestedTerms}`,
-            ),
+        core.setFailed(
+            `${filePath}: Line ${diagnostic.lineNumber} : The term ${diagnostic.term} was found. Consider using ${diagnostic.suggestedTerms}`,
         )
     }
 
