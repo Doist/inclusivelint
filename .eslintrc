@@ -1,0 +1,9 @@
+{
+    "ignorePatterns": "dist/*",
+    "extends": [
+        "@doist/eslint-config/recommended"
+    ],
+    "rules": {
+        "no-console": "off"
+    }
+}
