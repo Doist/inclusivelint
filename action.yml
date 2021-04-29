@@ -1,0 +1,10 @@
+name: 'Inclusivelint Github Action'
+description: 'Github Action that finds non inclusive words on a repository'
+inputs:
+  args:
+    required: true
+    description: 'Inclusivelint command line arguments'
+    default: '-p $GITHUB_WORKSPACE -r'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
