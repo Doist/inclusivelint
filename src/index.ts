@@ -16,5 +16,5 @@ if (process.env.CI === 'true') {
         core.setFailed(error.message)
     }
 } else {
-    new Program(process.argv).Run()
+    new Program(process.argv.slice(2)).Run()
 }

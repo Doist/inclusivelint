@@ -156,7 +156,7 @@ export class Program {
                 '-i, --ignore <ignore>',
                 'List of file patterns to be ignored, colon separated. Example: inclusivelint -p . -r -i /node_modules/**,/.git/** is provided, it will search for all files inside ./, except node_modules and .git folders.',
             )
-            .parse(args)
+            .parse(args, { from: 'user' })
             .opts()
     }
 
