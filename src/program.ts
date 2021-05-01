@@ -140,7 +140,7 @@ export class Program {
      */
     private static SetupCommandArgs(args: string[]): OptionValues {
         return new Command()
-            .version('1.0.0')
+            .version('2.0.0')
             .description('Scan non-inclusive terms')
             .option(
                 '-d, --dictionary-url <url>',

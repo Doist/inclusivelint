@@ -129,12 +129,12 @@ class Program {
      */
     async RunAsync() {
         // get files and run diagnostics for each one of them
-        const listOfFiles = this.GetFilesList();
+        const paths = this.GetPaths();
         const scanner = new scanner_1.Scanner(this.GetDictionaryUrlArgument());
-        for (const uniquePath of listOfFiles) {
-            if (fs.lstatSync(uniquePath).isFile()) {
-                const diagnostics = await scanner.scanFile(uniquePath);
-                Program.PrintDiagnostics(uniquePath, diagnostics);
+        for (const path of paths) {
+            if (fs.lstatSync(path).isFile()) {
+                const diagnostics = await scanner.scanFile(path);
+                Program.PrintDiagnostics(path, diagnostics);
             }
         }
     }
@@ -148,51 +148,51 @@ class Program {
     //#region Private
     /**
      * Prints diagnostic messages.
-     * @param filePath file path analyzed.
+     * @param path file path analyzed.
      * @param diagnostics diagnostic data
      */
-    static PrintDiagnostics(filePath, diagnostics) {
+    static PrintDiagnostics(path, diagnostics) {
         for (const diagnostic of diagnostics) {
-            Program.PrintWarningMessage(filePath, diagnostic);
+            Program.PrintWarningMessage(path, diagnostic);
         }
     }
     /**
      * Prints a warning message.
-     * @param filePath file path analyzed.
+     * @param path file path analyzed.
      * @param diagnostic diagnostic data
      * @returns formatted message.
      */
-    static PrintWarningMessage(filePath, diagnostic) {
-        core.setFailed(`${filePath}: Line ${diagnostic.lineNumber} : The term ${diagnostic.term} was found. Consider using ${diagnostic.suggestedTerms}`);
+    static PrintWarningMessage(path, diagnostic) {
+        core.setFailed(`${path}: Line ${diagnostic.lineNumber} : The term ${diagnostic.term} was found. Consider using ${diagnostic.suggestedTerms}`);
     }
     /**
      * Gets the list of ignored paths provided on the command line arguments.
      * @returns list of ignored paths.
      */
     GetIgnoredPaths() {
-        let ret = [];
+        let paths = [];
         if (this.GetIgnoreArgument()) {
-            ret = this.GetIgnoreArgument().split(',');
-            for (let i = 0; i < ret.length; i++) {
-                ret[i] = this.GetPathArgument() + ret[i];
-            }
+            paths = this.GetIgnoreArgument().split(',');
         }
-        return ret;
+        return paths;
     }
     /**
      * Gets the list of files, according to the command line arguments.
      * @returns list of files.
      */
-    GetFilesList() {
-        // if recursive option is flagged, then we must also consider the ignored paths
-        if (this.GetRecursiveArgument()) {
-            return glob_1.default.sync(this.GetPathArgument() + '/**/*', {
-                ignore: this.GetIgnoredPaths(),
-            });
+    GetPaths() {
+        let paths = [];
+        if (this.GetPathArgument()) {
+            let args = this.GetPathArgument().split(',');
+            for (let i = 0; i < args.length; i++) {
+                let path = args[i];
+                if (this.GetRecursiveArgument()) {
+                    path += '/**/*';
+                }
+                paths.push(...glob_1.default.sync(path, { ignore: this.GetIgnoredPaths() }));
+            }
         }
-        else {
-            return glob_1.default.sync(this.GetPathArgument());
-        }
+        return paths;
     }
     /**
      * Setup the list of command args.
@@ -200,11 +200,11 @@ class Program {
      */
     static SetupCommandArgs(args) {
         return new commander_1.Command()
-            .version('1.0.0')
-            .description('inclusivelint CLI for scanning non-inclusive terms')
-            .option('-d, --dictionary-url <url>', 'URL to the dictionary. See wordsTable.md for the format', 'https://raw.githubusercontent.com/Doist/inclusivelint/main/src/wordsTable.md')
-            .option('-p, --path <path>', 'Path to be scanned. If its a folder, use the -r ou --recursive option')
-            .option('-r, --recursive', 'If the --path option is a folder, use this option to run recursively. Not needed if its path is a file')
+            .version('2.0.0')
+            .description('Scan non-inclusive terms')
+            .option('-d, --dictionary-url <url>', 'URL to the dictionary. See wordsTable.md for the format.', 'https://raw.githubusercontent.com/Doist/inclusivelint/main/src/wordsTable.md')
+            .option('-p, --path <path>', 'Paths to be scanned, colon separated.')
+            .option('-r, --recursive', 'If the --path option is a folder, use this option to run recursively. Do not use with files.')
             .option('-i, --ignore <ignore>', 'List of file patterns to be ignored, colon separated. Example: inclusivelint -p . -r -i /node_modules/**,/.git/** is provided, it will search for all files inside ./, except node_modules and .git folders.')
             .parse(args, { from: 'user' })
             .opts();
