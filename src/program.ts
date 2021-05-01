@@ -104,16 +104,13 @@ export class Program {
      * @returns list of ignored paths.
      */
     private GetIgnoredPaths(): string[] {
-        let ret: string[] = []
+        let paths: string[] = []
 
         if (this.GetIgnoreArgument()) {
-            ret = this.GetIgnoreArgument().split(',')
-            for (let i = 0; i < ret.length; i++) {
-                ret[i] = this.GetPathArgument() + ret[i]
-            }
+            paths = this.GetIgnoreArgument().split(',')
         }
 
-        return ret
+        return paths
     }
 
     /**
@@ -121,14 +118,20 @@ export class Program {
      * @returns list of files.
      */
     private GetFilesList(): string[] {
-        // if recursive option is flagged, then we must also consider the ignored paths
-        if (this.GetRecursiveArgument()) {
-            return glob.sync(this.GetPathArgument() + '/**/*', {
-                ignore: this.GetIgnoredPaths(),
-            })
-        } else {
-            return glob.sync(this.GetPathArgument())
+        let paths: string[] = []
+
+        if (this.GetPathArgument()) {
+            let args = this.GetPathArgument().split(',')
+            for (let i = 0; i < args.length; i++) {
+                let path = args[i]
+                if (this.GetRecursiveArgument()) {
+                    path += '/**/*'
+                }
+                paths.push(...glob.sync(path, { ignore: this.GetIgnoredPaths() }))
+            }
         }
+
+        return paths
     }
 
     /**
@@ -146,7 +149,7 @@ export class Program {
             )
             .option(
                 '-p, --path <path>',
-                'Path to be scanned. If its a folder, use the -r ou --recursive option',
+                'Paths to be scanned, colon separated.',
             )
             .option(
                 '-r, --recursive',
