@@ -56,13 +56,13 @@ export class Program {
      */
     public async RunAsync(): Promise<void> {
         // get files and run diagnostics for each one of them
-        const listOfFiles = this.GetFilesList()
+        const paths = this.GetPaths()
         const scanner = new Scanner(this.GetDictionaryUrlArgument())
 
-        for (const uniquePath of listOfFiles) {
-            if (fs.lstatSync(uniquePath).isFile()) {
-                const diagnostics: InclusiveDiagnostic[] = await scanner.scanFile(uniquePath)
-                Program.PrintDiagnostics(uniquePath, diagnostics)
+        for (const path of paths) {
+            if (fs.lstatSync(path).isFile()) {
+                const diagnostics: InclusiveDiagnostic[] = await scanner.scanFile(path)
+                Program.PrintDiagnostics(path, diagnostics)
             }
         }
     }
@@ -78,24 +78,24 @@ export class Program {
     //#region Private
     /**
      * Prints diagnostic messages.
-     * @param filePath file path analyzed.
+     * @param path file path analyzed.
      * @param diagnostics diagnostic data
      */
-    private static PrintDiagnostics(filePath: string, diagnostics: InclusiveDiagnostic[]) {
+    private static PrintDiagnostics(path: string, diagnostics: InclusiveDiagnostic[]) {
         for (const diagnostic of diagnostics) {
-            Program.PrintWarningMessage(filePath, diagnostic)
+            Program.PrintWarningMessage(path, diagnostic)
         }
     }
 
     /**
      * Prints a warning message.
-     * @param filePath file path analyzed.
+     * @param path file path analyzed.
      * @param diagnostic diagnostic data
      * @returns formatted message.
      */
-    private static PrintWarningMessage(filePath: string, diagnostic: InclusiveDiagnostic) {
+    private static PrintWarningMessage(path: string, diagnostic: InclusiveDiagnostic) {
         core.setFailed(
-            `${filePath}: Line ${diagnostic.lineNumber} : The term ${diagnostic.term} was found. Consider using ${diagnostic.suggestedTerms}`,
+            `${path}: Line ${diagnostic.lineNumber} : The term ${diagnostic.term} was found. Consider using ${diagnostic.suggestedTerms}`,
         )
     }
 
@@ -117,7 +117,7 @@ export class Program {
      * Gets the list of files, according to the command line arguments.
      * @returns list of files.
      */
-    private GetFilesList(): string[] {
+    private GetPaths(): string[] {
         let paths: string[] = []
 
         if (this.GetPathArgument()) {
@@ -141,10 +141,10 @@ export class Program {
     private static SetupCommandArgs(args: string[]): OptionValues {
         return new Command()
             .version('1.0.0')
-            .description('inclusivelint CLI for scanning non-inclusive terms')
+            .description('Scan non-inclusive terms')
             .option(
                 '-d, --dictionary-url <url>',
-                'URL to the dictionary. See wordsTable.md for the format',
+                'URL to the dictionary. See wordsTable.md for the format.',
                 'https://raw.githubusercontent.com/Doist/inclusivelint/main/src/wordsTable.md',
             )
             .option(
@@ -153,7 +153,7 @@ export class Program {
             )
             .option(
                 '-r, --recursive',
-                'If the --path option is a folder, use this option to run recursively. Not needed if its path is a file',
+                'If the --path option is a folder, use this option to run recursively. Do not use with files.',
             )
             .option(
                 '-i, --ignore <ignore>',
