@@ -1,4 +1,4 @@
-on: [pull_request, workflow_dispatch]
+on: [push]
 
 jobs:
   inclusivelint:
@@ -8,6 +8,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
     - name: Lint for non-inclusive words
-      uses: Doist/inclusivelint@1.0.0
+      uses: Doist/inclusivelint@2.0.0
       with:
-        args: '-p $GITHUB_WORKSPACE -r -i /.git/**,/src/wordsTable.md'
+        args: '-p $GITHUB_WORKSPACE -r -i **/.git/**,**/src/wordsTable.md'
