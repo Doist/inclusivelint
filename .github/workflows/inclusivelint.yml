@@ -8,6 +8,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
     - name: Lint for non-inclusive words
-      uses: Doist/inclusivelint@2.0.0
+      uses: Doist/inclusivelint@v2
       with:
         args: '-p $GITHUB_WORKSPACE -r -i **/.git/**,**/src/wordsTable.md'

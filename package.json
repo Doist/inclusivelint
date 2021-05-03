@@ -1,6 +1,6 @@
 {
     "name": "@inclusivelint/inclusivelint",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Inclusivelint action based on inclusivelint/inclusivelint-lib",
     "main": "./dist/index.js",
     "bin": {

@@ -16,7 +16,7 @@ jobs:
     name: Lint project for non-inclusive words
     steps:
     - name: Inclusivelint
-      uses: Doist/inclusivelint@1.0.0
+      uses: Doist/inclusivelint@v2
       with:
         args: '-p $GITHUB_WORKSPACE -r -i **/.git/**,**/src/wordsTable.md'
 ```
