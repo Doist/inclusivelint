@@ -18,5 +18,5 @@ jobs:
     - name: Inclusivelint
       uses: Doist/inclusivelint@1.0.0
       with:
-        args: '-p $GITHUB_WORKSPACE -r -i .git/**,src/wordsTable.md'
+        args: '-p $GITHUB_WORKSPACE -r -i **/.git/**,**/src/wordsTable.md'
 ```
