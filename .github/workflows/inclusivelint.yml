@@ -4,6 +4,7 @@ jobs:
   inclusivelint:
     runs-on: ubuntu-latest
     name: Inclusivelint
+    timeout-minutes: 60
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
